@@ -141,7 +141,7 @@ exports["test zip"] = function(assert){
 
 	removeFolder("/tmp/zip-test");
 
-	assert.ok(io.exists("/home/johannes/Schreibtisch/tmp.zip"), "zip exists");
+	assert.ok(io.exists("/tmp/zip-test.zip"), "zip exists");
 
 	io.remove("/tmp/zip-test.zip");
 };
