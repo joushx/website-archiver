@@ -7,5 +7,9 @@ before_script:
   - sleep 3 # give xvfb some time to start
 before_install:
 - "npm install jpm -g"
+- "npm install jshint -g"
 addons:
   firefox: "46.0"
+script:
+- "npm test"
+- "jshint *.js"
