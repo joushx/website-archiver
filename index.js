@@ -68,7 +68,7 @@ function archive() {
     let window = wm.getMostRecentWindow("navigator:browser");
 
     // show notification for start of process
-    window.NativeWindow.toast.show("Archiving page started", "short");
+    //window.NativeWindow.toast.show("Archiving page started", "short");
 
     // call main archive function
     archiv.archive(window.content, path, function(manifest, errors){
@@ -92,7 +92,7 @@ pref.on("manual", function() {
 });
 
 // add button to menu
-window.NativeWindow.menu.add({
+/*window.NativeWindow.menu.add({
   name: "Archive",
   icon: null,
   callback: function () {
@@ -110,4 +110,4 @@ window.NativeWindow.menu.add({
 
     startVerification();
   }
-});
+});*/

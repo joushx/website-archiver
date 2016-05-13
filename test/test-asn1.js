@@ -56,18 +56,20 @@ exports["test decode simple DER"] = function(assert) {
 			{
 				type: "INTEGER",
 				size: 3,
-				value: 5
+				value: 5,
+				"bytes":"020105"
 			},
 			{
 				type: "INTEGER",
 				size: 3,
-				value: 8
+				value: 8,
+				"bytes":"020108"
 			}
 		],
 		bytes: "3006020105020108"
 	};
 
-	assert.equal(JSON.stringify(result), JSON.stringify(expected), "DER decoding works");
+	assert.equal(JSON.stringify(result), JSON.stringify(expected), "DER decoding");
 };
 
 exports["test decode length"] = function(assert){
@@ -79,33 +81,33 @@ exports["test decode length"] = function(assert){
         additionalBytes: 0
     };
 
-	assert.equal(JSON.stringify(length), JSON.stringify(exptected));
+	assert.equal(JSON.stringify(length), JSON.stringify(exptected), "length");
 };
 
 exports["test decode boolean false"] = function(assert){
     var input = [0x1, 0x1, 0x0];
 
     var result = asn.decodeDER(input, 0, {});
-    var exptected = {
+    var expected = {
         type: "BOOLEAN",
         size: 3,
         value: false
     };
 
-    assert.equal(JSON.stringify(result), JSON.stringify(exptected));
+    assert.equal(JSON.stringify(result), JSON.stringify(expected), "boolean false");
 };
 
 exports["test decode boolean true"] = function(assert){
-    var input = [0x1, 0x1, 0xff];
+    var input = [0x1, 0x1, 0x1];
 
     var result = asn.decodeDER(input, 0, {});
-    var exptected = {
+    var expected = {
         type: "BOOLEAN",
         size: 3,
         value: true
     };
 
-    assert.equal(JSON.stringify(result), JSON.stringify(exptected));
+    assert.equal(JSON.stringify(result), JSON.stringify(expected), "boolean true");
 };
 
 exports["test decode length long"] = function(assert){
@@ -117,7 +119,7 @@ exports["test decode length long"] = function(assert){
         additionalBytes: 2
     };
 
-    assert.equal(JSON.stringify(length), JSON.stringify(exptected));
+    assert.equal(JSON.stringify(length), JSON.stringify(exptected), "length long");
 };
 
 require("sdk/test").run(exports);

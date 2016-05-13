@@ -140,7 +140,7 @@ function decodeDER(data, position, object){
       return {
         type: "BOOLEAN",
         size: 3,
-        value: data[position+1] == 0xFF
+        value: data[position+2] !== 0x0
       };
     case 163:
       return {

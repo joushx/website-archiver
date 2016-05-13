@@ -40,18 +40,15 @@ exports["test getURLList simple.html"] = function(assert, done) {
 	});
 };
 
-/**
- * Check if the downloadList function downloads all given ressources
- * @param assert
- * @param done
- */
+
 exports["test downloadList"] = function(assert, done) {
 	"use strict";
 
 	var list = [
+		data.url("test/yes.js"),
 		data.url("test/simple.html"),
 		data.url("test/a"),
-		data.url("text/b/c")
+		data.url("test/b/c")
 	];
 
 	io.mkpath("/tmp/archive-download/");
@@ -59,19 +56,49 @@ exports["test downloadList"] = function(assert, done) {
 	archiver._downloadList(list, "/tmp/archive-download/", function(manifest, errors){
 
 		// check if all files are there
-		assert.ok(io.exists("/tmp/archive-download/simple.html"), "simple.html");
-		assert.ok(io.exists("/tmp/archive-download/a"), "a");
-		assert.ok(io.exists("/tmp/archive-download/b/c"), "c");
+		assert.ok(io.exists("/tmp/archive-download/resource:/data/test/simple.html/"), "simple.html");
+		assert.ok(io.exists("/tmp/archive-download/resource:/data/test/yes.js/"), "yes.js");
+		assert.ok(io.exists("/tmp/archive-download/resource:/data/test/a/"), "a");
+		assert.ok(io.exists("/tmp/archive-download/resource:/data/test/b/c/"), "c");
 
 		// check if number of files is as expected
-		assert.equal(2, io.list("/tmp/archive-download/").length, "file count");
+		assert.equal(4, io.list("/tmp/archive-download/resource:/data/test/").length, "file count");
 
-		/*checkContent(assert, "/home/johannes/Schreibtisch/tmp/test.johannes-mittendorfer.com_443/bachelor/a/b/c.txt", "Hello World!\n");
-		checkContent(assert, "/home/johannes/Schreibtisch/tmp/test.johannes-mittendorfer.com/bachelor/a/b/c.txt", "Hello World!\n");*/
+		checkContent(assert, "/tmp/archive-download/resource:/data/test/yes.js/__content", "abc", "content of ");
+		checkContent(assert, "/tmp/archive-download/resource:/data/test/a/__content", "Content of a");
+		checkContent(assert, "/tmp/archive-download/resource:/data/test/b/c/__content", "Content of c");
+
+		removeFolder("/tmp/archive-download/");
 
 		done();
 	});
+
 };
+
+function removeFolder(path){
+
+	// get list of files
+	var files = io.list(path);
+
+	// iterate through files
+	files.forEach(function(item, index, array){
+
+		// check if file or folder
+		if(io.isFile(path + "/" + item)){
+
+			// delete
+			io.remove(path + "/" + item);
+		}
+		else{
+
+			// call recursive
+			removeFolder(path + "/" + item);
+		}
+	});
+
+	// Delete empty directory
+	io.rmdir(path);
+}
 
 function checkContent(assert, path, expected){
 	"use strict";
@@ -91,32 +118,32 @@ function checkContent(assert, path, expected){
 exports["test zip"] = function(assert){
 	"use strict";
 
-	archiver._zip("/home/johannes/Schreibtisch/tmp/", "/home/johannes/Schreibtisch/tmp.zip");
+	// create directory
+	io.mkpath("/tmp/zip-test");
+
+	// create first file with content
+	var path = "/tmp/zip-test/1";
+	var stream = io.open(path, "w");
+	if (!stream.closed) {
+		stream.write("Content of 1");
+		stream.close();
+	}
+
+	// create first file with content
+	var path2 = "/tmp/zip-test/2";
+	var stream2 = io.open(path, "w");
+	if (!stream2.closed) {
+		stream2.write("Content of 2");
+		stream2.close();
+	}
+
+	archiver._zip("/tmp/zip-test", "/tmp/zip-test.zip");
+
+	removeFolder("/tmp/zip-test");
 
 	assert.ok(io.exists("/home/johannes/Schreibtisch/tmp.zip"), "zip exists");
-};
 
-exports["test archive simple.html"] = function(assert, done){
-	"use strict";
-
-	// open url
-	tabs.open({
-		url: data.url("test/simple.html"),
-		onOpen: function(tab) {
-			tab.on("ready",function(){
-
-				// run function
-				var window = require("sdk/window/utils").getMostRecentBrowserWindow().content;
-				archiver.archive(window, "/tmp/", function(){
-
-					// clean up
-					tab.close(function(){
-						done();
-					});
-				});
-			});
-		}
-	});
+	io.remove("/tmp/zip-test.zip");
 };
 
 require("sdk/test").run(exports);

@@ -14,7 +14,7 @@
     "xpi": "jpm xpi",
     "doc": "jsdoc *.js -d doc",
     "check": "jshint *.js",
-    "run": "jpm -b /usr/bin/firefox run --verbose --binary-args http://example.org",
+    "run": "jpm -b $FIREFOX_PATH run -v --debug --binary-args http://example.org",
     "run-mobil": "jpm-mobile run -b firefox",
     "test-mobile": "jpm-mobile test beta"
   },

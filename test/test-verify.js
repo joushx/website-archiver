@@ -1,21 +1,35 @@
 var verifier = require("../verify");
 var tabs = require("sdk/tabs");
-var {Cc,Ci} = require("chrome");
+var {Cc, Ci, Cu} = require("chrome");
 var io = require("sdk/io/file");
-const { atob, btoa } = require("resource://gre/modules/Services.jsm");
+const { atob } = require("resource://gre/modules/Services.jsm");
+Cu.import("resource://gre/modules/Services.jsm");
+var data = require("sdk/self").data;
 
-/**
- * Check if getURLList function can extract all links from a given page
- * @param assert
- * @param done
- */
-/*exports["test verfiy ZIP"] = function(assert, done) {
+Cu.import("resource://gre/modules/Services.jsm");
+Cu.import("resource://gre/modules/NetUtil.jsm");
+
+exports["test verfiy ZIP"] = function(assert, done) {
 	"use strict";
 
-	verifier.verifyZIP("/home/johannes/Schreibtisch/archives/out.zip");
-};*/
+	// copy to tmp folder
+	var file = Services.dirsvc.get("TmpD", Ci.nsIFile);
+	file.append("test.zip");
+	copyDataURLToFile(data.url("test/testzip.html"), file, function(file, result) {
 
-exports["test verfiy"] = function(assert, done) {
+		// verify copied zip
+		verifier.verifyZIP("/tmp/test.zip", function(result){
+			assert.ok(result.hashes_match, "Hash matches");
+			assert.ok(result.signature_valid, "Signature is valid");
+			assert.ok(result.certificate_trusted, "Cert is trusted");
+
+			done();
+		});
+
+	});
+};
+
+exports["test verify signature as hex"] = function(assert, done) {
 	"use strict";
 
 	var signature = "6fa8d78e06786c3d86237eec04d8943061b66a97b5baa7a7ff53a32e383bec7c4424fd02cd66ac7ffc44e16d4ca35b41050064282cffd16bfdac8f3029f170f914fe8d6d730df02e5f1b23efee065b01bb67e978a56665e4667a31f4c5b32f15584d4803e585380cb48245f3d424a8e2d42dc1077835f8a87656d54e6b2405049bb64738b5ee16fc5dba69f54cdce4002e12908ac22d0b5867357773000e787c7fc0501e5aa496255d50ad1bb1af7a61fa06da61f8d75bafae417b89eac9affbc759dcee014944703a126f39e83fee50cb0f8722dd7d21850f60a477bcfcaefc8d4a540b09539f25e9efcf83e8cfee5634d0720b1f75095160f3de2507ce69bb";
@@ -37,6 +51,17 @@ function _base64ToArrayBuffer(base64) {
 		bytes[i] = binary_string.charCodeAt(i);
 	}
 	return bytes.buffer;
+}
+
+function copyDataURLToFile(url, file, callback) {
+	NetUtil.asyncFetch(url, function(istream) {
+		var ostream = Cc["@mozilla.org/network/file-output-stream;1"].
+		createInstance(Ci.nsIFileOutputStream);
+		ostream.init(file, -1, -1, Ci.nsIFileOutputStream.DEFER_OPEN);
+		NetUtil.asyncCopy(istream, ostream, function(result) {
+			callback && callback(file, result);
+		});
+	});
 }
 
 require("sdk/test").run(exports);
