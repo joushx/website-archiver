@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Manual</h1>
+
+    <p>This extension provides functions for archiving websites with a cryptographic signature</p>
+
+    <p>As a result, it is possible to prove that a datum existed before a given time.</p>
+
+    <h2>Archiving</h2>
+
+    <p>In order to archive a page, it has to be open as active browser tab. In the main menu of Firefox you can select the item "Archive". A message should indicate the start of process.</p>
+
+    <p>Once a summary is shown, the process finished and was successful. The result file is avilable on your device under <pre>/mnt/sdcard/</pre> and contains the domain name and a timestamp value (e.g <pre>example.org-12345678.zip</pre>)</p>
+
+    <p>Was there an error message during the process, it is expected that it failed and did not produce a valid output.</p>
+
+    <h3>Summary</h3>
+
+    <p>After the archiving process a summary is opened and gives information about the result. It includes the archived URL, a list of ressources, a list of ressources that caused an error and the issuer and the serial number of the certificate used to sign the timestamp.</p>
+
+    <h2>Validation</h2>
+
+    <p>Archives that were create with this extension can be verified. By slecting "Verify archive" in the main menu, you are promted to select the archive file.</p>
+
+    <p>The process is started automatically and also shows an report once finished. In addition to the report after archiving, some information about the trust status of the certificate is shown.</p>
+
+    <h3>Hashes match</h3>
+
+    <p>Do the hash values match, the archive was not altered since the archiving process.</p>
+
+    <p>Certificate is trusted</p>
+
+    <p>If a certificate is trusted, the signature was created with a certificate that was labeled as truxted by Firefox.</p>
+
+    <p>A certificate can be untrusted when it is expired or revoked. In this case it has to be ensured the signature was create in the valid period or before the revocation date. You may contact a expert in this case.</p>
+
+    <h3>Signatur is correct</h3>
+
+    <p>If the signature is correct, it was created by the certificate included in the response.</p>
+
+    <h2>Moving archives</h2>
+
+    <p>The archives saved on a device can be moved to a computer or a different mobile device like any other file.</p>
+
+    <h3>USB</h3>
+
+    <p>By using a USB cable between your device and a computer, files can be compied by using a file browser.</p>
+
+    <h3>Network connection</h3>
+
+    <p>By using a filebrowser on your mobile device, the archives can be sent using different methods, for instance E-Mail.</p>
+
+    <h2>Configuration</h2>
+
+    <p>The preferences of this extension can be changed in the Firefox Add-On Manager. There you can change the address of the timestamp server.</p>
+
+    <p>Any server can be used that implements RFC 3161 with RSA.</p>
+
+    <p>Intermediate certificates</p>
+
+    <p>Please note that not all timestamp servers include all required certificates to generate a trusted certification chain.</p>
+
+    <p>You may need to install additional certificates in Firefox before they can be used. Instructions can usually be found on the website of the server operator.</p>
+</body>
+</html>

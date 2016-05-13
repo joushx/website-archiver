@@ -1,0 +1,74 @@
+{
+  "title": "Website Archiver",
+  "name": "archiver",
+  "version": "0.0.1",
+  "description": "A add-on for archiving websites",
+  "main": "index.js",
+  "author": "Johannes Mittendorfer",
+  "engines": {
+    "fennec": ">=38.0a1",
+    "firefox": ">=1.0"
+  },
+  "scripts": {
+    "test": "jpm -b /usr/bin/firefox test --binary-args about:blank --verbose",
+    "xpi": "jpm xpi",
+    "doc": "jsdoc *.js -d doc",
+    "check": "jshint *.js",
+    "run": "jpm -b /usr/bin/firefox run --verbose --binary-args http://example.org",
+    "run-mobil": "jpm-mobile run -b firefox",
+    "test-mobile": "jpm-mobile test beta"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "fennec-addon-preferences-workaround": "rpl/fennec-addon-preferences-workaround",
+    "jsrsasign": "^5.0.5"
+  },
+  "preferences": [
+    {
+      "name": "timestampserver",
+      "title": "Timestamp server",
+      "description": "The url of a timestamp-service that implements RFC 3161",
+      "type": "string",
+      "value": "http://sha256timestamp.ws.symantec.com/sha256/timestamp"
+    },
+    {
+      "name": "algorithm",
+      "type": "menulist",
+      "title": "Hashing algorithm",
+      "description": "The algorithm that is used for calculating checksums",
+      "value": "sha256",
+      "hidden": true,
+      "options": [
+        {
+          "value": "sha1",
+          "label": "SHA1"
+        },
+        {
+          "value": "sha256",
+          "label": "SHA256"
+        },
+        {
+          "value": "sha384",
+          "label": "SHA384"
+        },
+        {
+          "value": "sha512",
+          "label": "SHA512"
+        }
+      ]
+    },
+    {
+      "type": "directory",
+      "name": "targetdir",
+      "title": "Target directory",
+      "description": "Directory where a archived page is saved",
+      "value": "/mnt/sdcard/"
+    },
+    {
+      "type": "control",
+      "label": "Open manual",
+      "name": "manual",
+      "title": "Manual"
+    }
+  ]
+}
