@@ -10,7 +10,7 @@
     "firefox": ">=1.0"
   },
   "scripts": {
-    "test": "jpm -b /usr/bin/firefox test --binary-args about:blank --verbose",
+    "test": "jpm -b $FIREFOX_PATH test --binary-args about:blank --verbose",
     "xpi": "jpm xpi",
     "doc": "jsdoc *.js -d doc",
     "check": "jshint *.js",
