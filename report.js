@@ -15,14 +15,17 @@ var pageMod = require("sdk/page-mod");
  * @param trust {array} A array of the cert check result
  */
 function showReport(manifest, errors, trust) {
+  "use strict";
 
   tabs.open(self.data.url("report/report.html"));
 
   // set page URL
-  var html = 'document.querySelector(".url").innerHTML = "' + manifest.url + '";\n';
+  var html = 'document.querySelector(".url").innerHTML = "' +
+    manifest.url + '";\n';
 
   // add timestamp information
-  html += 'document.querySelector(".timestamp").innerHTML = "' + manifest.signature.timeStampToken.signedData.encapContentInfo.content.tstinfo.genTime + '";\n';
+  html += 'document.querySelector(".timestamp").innerHTML = "' +
+    manifest.signature.timeStampToken.signedData.encapContentInfo.content.tstinfo.genTime + '";\n';
 
   // add list of files
   var filesHTML = "";
@@ -31,19 +34,28 @@ function showReport(manifest, errors, trust) {
   });
   html += 'document.querySelector(".files").innerHTML = "' + filesHTML + '";\n';
 
-  if(errors) {
+  if (errors) {
     // add list of errors
     var errorHTML = "";
     errors.forEach(function (item, index, array) {
       errorHTML += item + "\\n";
     });
-    html += 'document.querySelector(".errors").innerHTML = "' + errorHTML + '";\n';
+    html += "document.querySelector('.errors').innerHTML = '" + errorHTML + "';\n";
   }
 
   // add signature information
-  var signature = 'document.querySelector(".signature").innerHTML = "' + manifest.signature.timeStampToken.signedData.certificates[manifest.signature.timeStampToken.signedData.certificates.length-1].serialNumber + " (" + manifest.signature.timeStampToken.signedData.certificates[manifest.signature.timeStampToken.signedData.certificates.length-1].issuer.commonName + ')";\n';
-  if(trust){
-    signature += 'document.querySelector(".signature").innerHTML = "Hashes match: ' + trust.hashes_match + '\\nCertificate trusted: ' + trust.certificate_trusted + '\\nSignature valid: ' + trust.signature_valid + '";';
+  var signature = 'document.querySelector(".signature").innerHTML = "' +
+    manifest.signature.timeStampToken.signedData.certificates[
+      manifest.signature.timeStampToken.signedData.certificates.length - 1
+    ].serialNumber + " (" + manifest.signature.timeStampToken.signedData.certificates[
+      manifest.signature.timeStampToken.signedData.certificates.length - 1
+    ].issuer.commonName + ')";\n';
+
+  if (trust) {
+    signature += "document.querySelector('.signature').innerHTML = '" +
+      "Hashes match: " + trust.hashes_match + "\\n" +
+      "Certificate trusted: " + trust.certificate_trusted + "\\n" +
+      "Signature valid: " + trust.signature_valid + "';";
   }
   html += signature;
 

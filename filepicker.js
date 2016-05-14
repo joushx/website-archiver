@@ -22,7 +22,7 @@ function openFile() {
   var rv = fp.show();
 
   // check response
-  if (rv == Ci.nsIFilePicker.returnOK || rv == Ci.nsIFilePicker.returnReplace) {
+  if (rv === Ci.nsIFilePicker.returnOK || rv === Ci.nsIFilePicker.returnReplace) {
     return fp.file.path;
   }
   else{

@@ -4,8 +4,8 @@
  * @author Johannes Mittendorfer
  */
 
-const { atob } = require("resource://gre/modules/Services.jsm");
-const { btoa } = require("resource://gre/modules/Services.jsm");
+var { atob } = require("resource://gre/modules/Services.jsm");
+var { btoa } = require("resource://gre/modules/Services.jsm");
 
 /**
  * Converts a array of bytes
@@ -35,8 +35,9 @@ function arrayToHex(buffer){
 function hexToArray(hex) {
   "use strict";
 
-  for (var bytes = [], c = 0; c < hex.length; c += 2)
+  for (var bytes = [], c = 0; c < hex.length; c += 2) {
     bytes.push(parseInt(hex.substr(c, 2), 16));
+  }
   return bytes;
 }
 
@@ -50,8 +51,9 @@ function hexToString(hex){
 
   var bytes = [], str;
 
-  for(var i=0; i< hex.length-1; i+=2)
+  for(var i=0; i< hex.length-1; i+=2) {
     bytes.push(parseInt(hex.substr(i, 2), 16));
+  }
 
   return String.fromCharCode.apply(String, bytes);
 }
@@ -92,7 +94,7 @@ function stringToHex(string){
   for (i=0; i < string.length; i++) {
     hex = string.charCodeAt(i).toString(16);
 
-    if(hex.length == 1){
+    if(hex.length === 1){
       hex = "0" + hex;
     }
 

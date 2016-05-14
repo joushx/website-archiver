@@ -154,10 +154,10 @@ function verifyManifest(contentsHash, manifest, callback){
     if(verifyResult.value === 0) {
       result.certificate_trusted = true;
     }
-    else if(verifyResult.value == 1 << 1){
+    else if(verifyResult.value === 1 << 1){
       result.certificate_trusted = "revoked";
     }
-    else if(verifyResult.value == 1 << 2){
+    else if(verifyResult.value === 1 << 2){
       result.certificate_trusted = "expired";
     }
   }

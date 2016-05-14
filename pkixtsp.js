@@ -20,7 +20,7 @@ Cu.importGlobalProperties(['crypto']);
 
 /**
  * Signs a hash
- * @param hash {string} A sha-1 hash as string
+ * @param hashValue {string} A sha-1 hash as string
  * @param callback Callback function
  */
 function sign(hashValue, callback) {
@@ -50,13 +50,13 @@ function sign(hashValue, callback) {
 		}
 
     // check if response is of the same hash as we sent
-    if(hashValue != response.timeStampToken.signedData.encapContentInfo.content.tstinfo.messageImprint.hash){
+    if(hashValue !== response.timeStampToken.signedData.encapContentInfo.content.tstinfo.messageImprint.hash){
       error.show("Hashes do not match");
       throw "Hashes do not match";
     }
 
     // check if algorithm is the as we sent
-    if(hash.getCurrentOID() != response.timeStampToken.signedData.encapContentInfo.content.tstinfo.messageImprint.algorithm.id){
+    if(hash.getCurrentOID() !== response.timeStampToken.signedData.encapContentInfo.content.tstinfo.messageImprint.algorithm.id){
       error.show("Digest algorithms do not match");
       throw "Digest algorithms do not match";
     }
@@ -64,7 +64,7 @@ function sign(hashValue, callback) {
     console.log(nonce);
     console.log(response.timeStampToken.signedData.encapContentInfo.content.tstinfo.nonce);
 
-    if(nonce != response.timeStampToken.signedData.encapContentInfo.content.tstinfo.nonce){
+    if(nonce !== response.timeStampToken.signedData.encapContentInfo.content.tstinfo.nonce){
       error.show("Nonce does not match");
       throw "Nonce does not match";
     }
@@ -75,7 +75,7 @@ function sign(hashValue, callback) {
 
     // extract certificate that was used to sign
     var serialNr = response.timeStampToken.signedData.signerInfos[0].sid.serial;
-    var key;
+    var key = null;
     response.timeStampToken.signedData.certificates.forEach(function(element, index, array){
       if(serialNr === element.serialNumber){
         key = element.subjectPublicKeyInfo;
@@ -237,15 +237,15 @@ function parseTimestampToken(input){
                         cert.signedCertificate.version = element.value[0].value;
                       }
 
-                      else if(index == 1){
+                      else if(index === 1){
                         cert.serialNumber = element.bytes;
                       }
 
-                      else if(index == 2){
+                      else if(index === 2){
                         cert.signature = {};
                       }
 
-                      else if(index == 3){
+                      else if(index === 3){
                         var issuer = {};
 
                         element.value.forEach(function(element, index, array){
@@ -266,15 +266,15 @@ function parseTimestampToken(input){
                         cert.issuer = issuer;
                       }
 
-                      else if(index == 4){
+                      else if(index === 4){
                         cert.validity = {};
                       }
 
-                      else if(index == 5){
+                      else if(index === 5){
                         cert.subject = {};
                       }
 
-                      else if(index == 6){
+                      else if(index === 6){
                         cert.subjectPublicKeyInfo = element.bytes;
                       }
                     });
@@ -411,19 +411,19 @@ function parseTSTInfo(input){
     if(index > 4){
 
       // accuracy                     Accuracy                 OPTIONAL,
-      if(element.type == "SEQUENCE"){
+      if(element.type === "SEQUENCE"){
         tst.accuracy = {};
       }
 
       // ordering                     BOOLEAN             DEFAULT FALSE,
-      else if(element.type == "BOOLEAN"){
+      else if(element.type === "BOOLEAN"){
         tst.ordering = element.value;
       }
 
       // nonce                        INTEGER                  OPTIONAL,
       // -- MUST be present if the similar field was present
       // -- in TimeStampReq.  In that case it MUST have the same value.
-      else if(element.type == "INTEGER"){
+      else if(element.type === "INTEGER"){
         tst.nonce = element.bytes.substring(4);
       }
 
@@ -574,7 +574,8 @@ function requestTimestamp(url, query, callback){
 
 /**
  * Creates a timestamp query from a given sha-1 hash
- * @param hash {string} A sha-1 hash to be signed
+ * @param hashValue {string} A sha-1 hash to be signed as hex string
+ * @param nonce {string} The nonce value as hex string
  * @returns {string} Query as byte string
  */
 function createQuery(hashValue, nonce){

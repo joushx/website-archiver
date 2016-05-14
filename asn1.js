@@ -43,8 +43,8 @@ var SET = 0x31;
 function decodeDER(data, position, object){
   "use strict";
 
-  let length = decodeLength(data, position);
-  let type;
+  var length = decodeLength(data, position);
+  var type;
   switch (data[position]){
     case 0xa0:
     case 0xa1:
@@ -73,8 +73,8 @@ function decodeDER(data, position, object){
 
       var bytes = cutil.arrayToHex(data.slice(position, position+2+length.additionalBytes+length.value));
 
-      let children = [];
-      let sum = 0;
+      var children = [];
+      var sum = 0;
       while(sum < length.value){
         let current = decodeDER(data, position+2+length.additionalBytes, object);
 

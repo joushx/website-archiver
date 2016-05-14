@@ -233,7 +233,7 @@ function downloadList(list, path, callback){
 
 		// download file into folder
 		var filename;
-		if(fullPath.slice(-1) == "/"){
+		if(fullPath.slice(-1) === "/"){
 			filename = fullPath + "__content";
 		}
 		else{
