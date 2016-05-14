@@ -1,1 +1,1 @@
-abc
+console.log("!");
