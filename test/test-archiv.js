@@ -24,12 +24,12 @@ exports["test getURLList simple.html"] = function(assert, done) {
 
 				// check
 				assert.equal(7, links.length, "URL count");
-				assert.ok(links.indexOf(data.url("test/yes.css") !== -1, "CSS"));
-				assert.ok(links.indexOf(data.url("test/yes.js") !== -1, "JavaScript"));
-				assert.ok(links.indexOf(data.url("test/yes.jpg") !== -1, "Image"));
-				assert.ok(links.indexOf(data.url("test/yes.mp4") !== -1, "Video"));
-				assert.ok(links.indexOf(data.url("test/yes.mp3") !== -1, "Audio"));
-				assert.ok(links.indexOf(data.url("test/yes.html") !== -1, "Frame"));
+				assert.ok(links.indexOf(data.url("test/yes.css") !== -1), "CSS");
+				assert.ok(links.indexOf(data.url("test/yes.js") !== -1), "JavaScript");
+				assert.ok(links.indexOf(data.url("test/yes.jpg") !== -1), "Image");
+				assert.ok(links.indexOf(data.url("test/yes.mp4") !== -1), "Video");
+				assert.ok(links.indexOf(data.url("test/yes.mp3") !== -1), "Audio");
+				assert.ok(links.indexOf(data.url("test/yes.html") !== -1), "Frame");
 
 				// clean up
 				tab.close(function(){
@@ -64,7 +64,7 @@ exports["test downloadList"] = function(assert, done) {
 		// check if number of files is as expected
 		assert.equal(4, io.list("/tmp/archive-download/resource:/data/test/").length, "file count");
 
-		checkContent(assert, "/tmp/archive-download/resource:/data/test/yes.js/__content", "abc", "content of ");
+		checkContent(assert, "/tmp/archive-download/resource:/data/test/yes.js/__content", "console.log(\"!\");");
 		checkContent(assert, "/tmp/archive-download/resource:/data/test/a/__content", "Content of a");
 		checkContent(assert, "/tmp/archive-download/resource:/data/test/b/c/__content", "Content of c");
 
