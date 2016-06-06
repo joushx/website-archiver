@@ -1,13 +1,12 @@
 {
   "title": "Website Archiver",
   "name": "archiver",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A add-on for archiving websites",
   "main": "index.js",
   "author": "Johannes Mittendorfer",
   "engines": {
-    "fennec": ">=38.0a1",
-    "firefox": ">=1.0"
+    "fennec": ">=21.0"
   },
   "scripts": {
     "test": "jpm -b $FIREFOX_PATH test --binary-args about:blank --verbose",
