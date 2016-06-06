@@ -9,7 +9,7 @@ var data = require("sdk/self").data;
  * @param assert
  * @param done
  */
-exports["test getURLList simple.html"] = function(assert, done) {
+/*exports["test getURLList simple.html"] = function(assert, done) {
 	"use strict";
 
 	// open url
@@ -38,7 +38,7 @@ exports["test getURLList simple.html"] = function(assert, done) {
 			});
 		}
 	});
-};
+};*/
 
 
 exports["test downloadList"] = function(assert, done) {

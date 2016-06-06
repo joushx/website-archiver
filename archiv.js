@@ -153,40 +153,18 @@ function writeManifest(manifest, path){
 function getURLList(window){
 	"use strict";
 
-	// get node list of elements on page
+	// create list of ressource and init with page URL
 	var urlList = [window.location.href];
-	var nodes = window.document.querySelectorAll("*");
 
-	for(var i=0; i < nodes.length; i++){
+	// get list of loaded ressources with new performance API
+	var resources = window.performance.getEntriesByType("resource");
 
-		var url = "";
-		var node = nodes[i];
+	// for each ressource extract the url
+	resources.forEach(function (resource) {
+		urlList.push(resource.name);
+	});
 
-		// use URLs based on tag name
-		switch(nodes[i].nodeName){
-			case "LINK":
-				switch (node.rel){
-					case "stylesheet":
-						url = node.href;
-						break;
-				}
-				break;
-			case "IMG":
-			case "SCRIPT":
-			case "IFRAME":
-			case "VIDEO":
-			case "AUDIO":
-				url = node.src;
-				break;
-		}
-
-		// check if element has attribute
-		if(url !== ""){
-			urlList.push(url);
-		}
-	}
-
-	console.log("list: " + urlList);
+	console.log(urlList);
 
 	return urlList;
 }
