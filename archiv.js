@@ -194,30 +194,19 @@ function downloadList(list, path, callback){
 		var fullPath = "";
 		if(address.port === null){	// check if default http ports
 			if (address.protocol === "http:"){
-				fullPath = path + address.host + address.pathname + address.search;
+				fullPath = path + address.host + address.pathname;
 			}
 			else if(address.protocol === "https:"){
-				fullPath = path + address.host + "_443" + address.pathname + address.search;
+				fullPath = path + address.host + "_443" + address.pathname;
 			}
 			else{
-				fullPath = path + address.protocol + address.pathname + address.search;
+				fullPath = path + address.protocol + address.pathname;
 			}
 		} else {
-			fullPath = path + address.host + "_" + address.port + address.pathname + address.search;
+			fullPath = path + address.host + "_" + address.port + address.pathname;
 		}
 
-		// create containing folder
-		io.mkpath(fullPath);
-
-		// download file into folder
-		var filename;
-		if(fullPath.slice(-1) === "/"){
-			filename = fullPath + "__content";
-		}
-		else{
-			filename = fullPath + "/__content";
-		}
-		download(address, filename, onSuccess, onError);
+		download(address, fullPath, onSuccess, onError);
 	}
 
 	function onSuccess(manifestObject){
@@ -252,10 +241,47 @@ function downloadList(list, path, callback){
  * @callback onSuccess Called when download is a success
  * @callback onError Called when download fails
  */
-function download(url, path, onSuccess, onError){
+function download(url, rawPath, onSuccess, onError){
 	"use strict";
 
 	console.log("download " + url);
+
+	// check if path is already there and use (2), (3), (4) etc. if so
+	var path;
+	if(io.exists(rawPath)){
+
+		// try integers
+		for(var i = 2; i < Number.POSITIVE_INFINITY; i++){
+
+			// if it does not exist
+			if(!io.exists(rawPath + " (" + i + ")")){
+
+				// set path and leave
+				path = rawPath + " (" + i + ")";
+				break;
+			}
+		}
+	}
+	else{
+
+		// nothing special; use default
+		path = rawPath;
+	}
+
+	// create containing folder
+	io.mkpath(path);
+
+	// create path for content
+	var contentFilename;
+	var parameterFilename;
+	if(path.slice(-1) === "/"){
+		contentFilename = path + "__content";
+		parameterFilename = path + "__parameter";
+	}
+	else{
+		contentFilename = path + "/__content";
+		parameterFilename = path + "/__parameter";
+	}
 
 	// create empty manifest object for file
 	var manifestObject = {};
@@ -265,22 +291,33 @@ function download(url, path, onSuccess, onError){
 	// onSuccess
 	request.addEventListener("load", function(){
 
-		var stream = io.open(path, "w");
-
-		// write to file
-		if (!stream.closed) {
-			stream.write(this.responseText);
-			stream.close();
+		// write content to file
+		var contentStream = io.open(contentFilename, "w");
+		if (!contentStream.closed) {
+			contentStream.write(this.responseText);
+			contentStream.close();
 		}
 		else{
 			throw "stream is closed";
 		}
 
+		// write parameter to file if present
+		if(url.search !== ""){
+			var parameterStream = io.open(parameterFilename, "w");
+			if (!parameterStream.closed) {
+				parameterStream.write(url.search);
+				parameterStream.close();
+			}
+			else{
+				throw "stream is closed";
+			}
+		}
+
 		// create hash and manifest object
 		manifestObject = {
-			file: path,
+			file: contentFilename,
 			url: url,
-			hash: hash.hashFile(path)
+			hash: hash.hashFile(contentFilename)
 		};
 
 		// check if SSL
