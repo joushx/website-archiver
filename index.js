@@ -43,7 +43,7 @@ function startVerification(){
   verify.verifyZIP(file, function(result, manifest){
 
     // show report HTML file
-    report.showReport(manifest, undefined, result);
+    report.showVerifyReport(manifest, result);
   });
 }
 
@@ -76,7 +76,7 @@ function archive() {
       console.log("archiving was successful");
 
       // show report HTML file
-      report.showReport(manifest, errors);
+      report.showArchiveReport(manifest, errors);
     });
 
   } catch (err) {
