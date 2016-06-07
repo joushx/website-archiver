@@ -72,6 +72,7 @@ function sign(hashValue, callback) {
     var signature = response.timeStampToken.signedData.signerInfos[0].signature;
     var digestAlgorithm = response.timeStampToken.signedData.signerInfos[0].digestAlgorithm.id;
     var data = response.timeStampToken.signedData.signerInfos[0].signedAttrs;
+    var signatureAlgorithm = response.timeStampToken.signedData.signerInfos[0].signatureAlgorithm.id;
 
     // extract certificate that was used to sign
     var serialNr = response.timeStampToken.signedData.signerInfos[0].sid.serial;
@@ -85,7 +86,7 @@ function sign(hashValue, callback) {
     // replace implicit tag with SET tag at beginning according to RFC of CMS
     data = "31" + data.substr(2);
 
-    verify.verifySignature(signature, data, key, digestAlgorithm, function(result) {
+    verify.verifySignature(signatureAlgorithm, signature, data, key, digestAlgorithm, function(result) {
 
       if (!result) {
         error.show("Signature is invalid");
@@ -334,7 +335,7 @@ function parseTimestampToken(input){
 
                   // signature algorithm
                   else if(index === 4){
-                    signerInfo.signatureAlgorithm = {};
+                    signerInfo.signatureAlgorithm = parseAlgorithm(element);
                   }
 
                   //signature

@@ -166,12 +166,13 @@ function verifyManifest(contentsHash, manifest, callback){
   var signature = manifest.signature.timeStampToken.signedData.signerInfos[0].signature;
   var digestAlgorithm = manifest.signature.timeStampToken.signedData.signerInfos[0].digestAlgorithm.id;
   var data = manifest.signature.timeStampToken.signedData.signerInfos[0].signedAttrs;
+  var signatureAlgorithm = manifest.signature.timeStampToken.signedData.signerInfos[0].signatureAlgorithm.id;
 
   // replace implicit tag with SET tag at beginning according to RFC of CMS
   data = "31" + data.substr(2);
 
   // verify cryptographic signature
-  verifySignature(signature, data, key.subjectPublicKeyInfo, digestAlgorithm, function(isvalid){
+  verifySignature(signatureAlgorithm, signature, data, key.subjectPublicKeyInfo, digestAlgorithm, function(isvalid){
 
     // save result
     result.signature_valid = isvalid;
@@ -182,6 +183,31 @@ function verifyManifest(contentsHash, manifest, callback){
 }
 
 /**
+ * Verifies a RSASSA-PKCS1-v1_5 or ECDSA signature
+ * @param algorithm The oid of the used signature algorithm
+ * @param signature The signature as hex string
+ * @param data The data on which the signature was computed
+ * @param publicKey The public key for the private key that was used to compute the hash
+ * @param digestAlgorithm OID string of the digest algorihtm used to hash content for signature
+ * @param callback A function called when the verification is finished
+ */
+function verifySignature(signatureAlgorithm, signature, data, publicKey, digestAlgorithm, callback) {
+
+  switch (signatureAlgorithm) {
+    case "1.2.840.113549.1.1.1":
+      // RSA
+      verifyRSA(signature, data, publicKey, digestAlgorithm, callback);
+      break;
+    case "1.2.840.10045.4.3.2":
+      // ECDSA
+      verifyECDSA(signature, data, publicKey, digestAlgorithm, callback);
+      break;
+    default:
+      error.show("Signature algorithm not supported: " + signatureAlgorithm);
+  }
+}
+
+/**
  * Verifies a RSASSA-PKCS1-v1_5 signature
  * @param signature The signature as hex string
  * @param data The data on which the signature was computed
@@ -189,7 +215,7 @@ function verifyManifest(contentsHash, manifest, callback){
  * @param digestAlgorithm OID string of the digest algorihtm used to hash content for signature
  * @param callback A function called when the verification is finished
  */
-function verifySignature(signature, data, publicKey, digestAlgorithm, callback) {
+function verifyRSA(signature, data, publicKey, digestAlgorithm, callback) {
 
   crypto.subtle.importKey(
     "spki",
@@ -206,6 +232,51 @@ function verifySignature(signature, data, publicKey, digestAlgorithm, callback) 
       crypto.subtle.verify(
         {
           name: "RSASSA-PKCS1-v1_5"
+        },
+        publicKey,
+        new Uint8Array(cutil.hexToArray(signature)),
+        new Uint8Array(cutil.hexToArray(data))
+        )
+        .then(function(isvalid){
+          callback(isvalid);
+        })
+        .catch(function(err){
+          error.show(err);
+          throw(err);
+        });
+
+    })
+    .catch(function(err){
+      error.show(err);
+      throw(err);
+    });
+}
+
+/**
+ * Verifies a ECDSA signature
+ * @param signature The signature as hex string
+ * @param data The data on which the signature was computed
+ * @param publicKey The public key for the private key that was used to compute the hash
+ * @param digestAlgorithm OID string of the digest algorihtm used to hash content for signature
+ * @param callback A function called when the verification is finished
+ */
+function verifyECDSA(signature, data, publicKey, digestAlgorithm, callback) {
+
+  crypto.subtle.importKey(
+    "spki",
+    new Uint8Array(cutil.hexToArray(publicKey)),
+    {
+      name: "ECDSA",
+      hash: {name: getNameForOID(digestAlgorithm)}
+    },
+    false,
+    ["verify"]
+    )
+    .then(function(publicKey){
+
+      crypto.subtle.verify(
+        {
+          name: "ECDSA"
         },
         publicKey,
         new Uint8Array(cutil.hexToArray(signature)),
