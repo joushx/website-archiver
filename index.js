@@ -88,7 +88,7 @@ function archive() {
 
 // listen for clicks on preference button to show manual
 pref.on("manual", function() {
-  tabs.open(self.data.url("manual.html"));
+  tabs.open(self.data.url("manual/manual.html"));
 });
 
 // add button to menu
