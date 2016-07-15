@@ -58,13 +58,6 @@
       ]
     },
     {
-      "type": "directory",
-      "name": "targetdir",
-      "title": "Target directory",
-      "description": "Directory where a archived page is saved",
-      "value": "/mnt/sdcard/"
-    },
-    {
       "type": "control",
       "label": "Open manual",
       "name": "manual",
