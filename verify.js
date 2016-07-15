@@ -139,18 +139,23 @@ function verifyManifest(contentsHash, manifest, callback){
     }
   });
 
-  // check trust status
+  // get cert from base64 representation
   var cert = certdb.constructX509FromBase64(cutil.hexToBase64(key.bytes));
 
+  // go through certification chain
   var arr = cert.getChain().enumerate();
   while(arr.hasMoreElements()){
+
+    // get current item
     var elem = arr.getNext().QueryInterface(Ci.nsIX509Cert);
 
+    // verify the item
     var verifyResult = {};
     var count = {};
     var usages = {};
     elem.getUsagesArray(false, verifyResult, count, usages);
 
+    // check if this certificate is trusted
     if(verifyResult.value === 0) {
       result.certificate_trusted = true;
     }
