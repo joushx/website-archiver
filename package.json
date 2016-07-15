@@ -1,7 +1,7 @@
 {
   "title": "Website Archiver",
   "name": "website-archiver",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A add-on for archiving websites",
   "main": "index.js",
   "author": "Johannes Mittendorfer",
