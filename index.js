@@ -17,6 +17,7 @@ var pkixtsp = require("pkixtsp");
 var filepicker = require("filepicker");
 var error = require("error");
 var report = require("report");
+var environment = require("environment");
 
 // get window
 let wm = Cc["@mozilla.org/appshell/window-mediator;1"].getService(Ci.nsIWindowMediator);
@@ -54,7 +55,7 @@ function archive() {
   "use strict";
 
   // set target path
-  let path = pref.prefs.targetdir;
+  let path = environment.getExternalStorageDirectory();
 
   if (!path) {
     throw "Path cannot be null";
