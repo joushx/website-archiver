@@ -9,7 +9,7 @@ var signature = document.querySelector(".signature");
 var errorWrapper = document.querySelector(".error-wrapper");
 
 // set url
-url.innerHTML = self.options.manifest.url;
+url.innerHTML = escapeHTML(self.options.manifest.url);
 
 // set timestamp
 var time = self.options.manifest.signature.timeStampToken.signedData.encapContentInfo.content.tstinfo.genTime;
@@ -24,7 +24,7 @@ var filesHTML = "";
 self.options.manifest.files.forEach(function (item, index, array) {
   filesHTML += item.url + "\n";
 });
-files.innerHTML = filesHTML;
+files.innerHTML = escapeHTML(filesHTML);
 
 // add errors
 if (self.options.errors) {
@@ -34,7 +34,7 @@ if (self.options.errors) {
     errorHTML += item + "\n";
   });
 
-  errors.innerHTML = errorHTML;
+  errors.innerHTML = escapeHTML(errorHTML);
 }
 else{
 
@@ -43,10 +43,10 @@ else{
 }
 
 // add hash
-hash.innerHTML = self.options.manifest.signature.timeStampToken.signedData.encapContentInfo.content.tstinfo.messageImprint.hash;
+hash.innerHTML = escapeHTML(self.options.manifest.signature.timeStampToken.signedData.encapContentInfo.content.tstinfo.messageImprint.hash);
 
 // add signature
-signature.innerHTML = self.options.manifest.signature.timeStampToken.signedData.signerInfos[0].signature;
+signature.innerHTML = escapeHTML(self.options.manifest.signature.timeStampToken.signedData.signerInfos[0].signature);
 
 // add certificate information
 var certs = self.options.manifest.signature.timeStampToken.signedData.certificates;
@@ -54,4 +54,8 @@ var certHtml = "";
 certs.forEach(function(element, index, array){
   certHtml += element.serialNumber + " (" + element.issuer.commonName + ")\n";
 });
-cert.innerHTML = certHtml;
+cert.innerHTML = escapeHTML(certHtml);
+
+// from https://developer.mozilla.org/en-US/Add-ons/Overlay_Extensions/XUL_School/DOM_Building_and_HTML_Insertion#innerHTML_with_HTML_Escaping
+function escapeHTML(str) str.replace(/[&"<>]/g, function (m) escapeHTML.replacements[m]);
+escapeHTML.replacements = { "&": "&amp;", '"': "&quot;", "<": "&lt;", ">": "&gt;" };
