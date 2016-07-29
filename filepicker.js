@@ -17,7 +17,7 @@ function openFile() {
   var window = require("sdk/window/utils").getMostRecentBrowserWindow();
 
   // show fileficker
-  fp.init(window, "Select a archive", Ci.nsIFilePicker.modeOpen);
+  fp.init(window, "Select an archive", Ci.nsIFilePicker.modeOpen);
   fp.appendFilters(Ci.nsIFilePicker.filterAll);
   var rv = fp.show();
 
